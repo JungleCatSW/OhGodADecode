@@ -38,72 +38,84 @@ strap = '999000000000000022559D0010DE5B4480551312B74C450A00400600750414206A8900A
 // must have (len >> 1) bytes allocated
 // Maybe asciistr just NULL terminated?
 // Returns length of rawstr in bytes
-int ASCIIHexToBinary(void *rawstr, const char *asciistr, size_t len)
-{
-	for(int i = 0, j = 0; i < len; ++i)
-	{
-		char tmp = asciistr[i];
-		if(tmp < 'A') tmp -= '0';
-		else if(tmp < 'a') tmp = (tmp - 'A') + 10;
-		else tmp = (tmp - 'a') + 10;
-		
-		if(i & 1) ((uint8_t *)rawstr)[j++] |= tmp & 0x0F;
-		else ((uint8_t *)rawstr)[j] = tmp << 4;
-	}
-	
-	return(len >> 1);
+int ASCIIHexToBinary(void *rawstr, const char *asciistr, size_t len) {
+  for (int i = 0, j = 0; i < len; ++i) {
+    char tmp = asciistr[i];
+    if (tmp < 'A') tmp -= '0';
+    else if (tmp < 'a') tmp = (tmp - 'A') + 10;
+    else tmp = (tmp - 'a') + 10;
+
+    if (i & 1) ((uint8_t *) rawstr)[j++] |= tmp & 0x0F;
+    else ((uint8_t *) rawstr)[j] = tmp << 4;
+  }
+
+  return (len >> 1);
 }
 
-int main(int argc, char **argv)
-{
-	uint32_t buf[12];
-	VBIOS_TIMING_FORMAT *Timings = (VBIOS_TIMING_FORMAT *)buf;
-		
-	// Short circuited logic should prevent a segfault.
-	if(argc != 2 || strlen(argv[1]) != 96)
-	{
-		printf("Usage: <96-char hex string>\n");
-		return(1);
-	}
-	
-	ASCIIHexToBinary(buf, argv[1], 96);
-		
-	printf("TRCDW = %d\n", Timings->SEQ_RAS_TIMING.TRCDW);
-	printf("TRCDWA = %d\n", Timings->SEQ_RAS_TIMING.TRCDWA);
-	printf("TRCDR = %d\n", Timings->SEQ_RAS_TIMING.TRCDR);
-	printf("TRCDRA = %d\n", Timings->SEQ_RAS_TIMING.TRCDRA);
-	printf("TRRD = %d\n", Timings->SEQ_RAS_TIMING.TRRD);
-	printf("TRC = %d\n", Timings->SEQ_RAS_TIMING.TRC);
-	printf("Pad0 = %d\n\n", Timings->SEQ_RAS_TIMING.Pad0);
-	
-	printf("TRP_WRA = %d\n", Timings->SEQ_MISC_TIMING.TRP_WRA);
-	printf("Pad0 = %d\n", Timings->SEQ_MISC_TIMING.Pad0);
-	printf("TRP_RDA = %d\n", Timings->SEQ_MISC_TIMING.TRP_RDA);
-	printf("TRP = %d\n", Timings->SEQ_MISC_TIMING.TRP);
-	printf("TRFC = %d\n\n", Timings->SEQ_MISC_TIMING.TRFC);
-	
-	printf("PA2RDATA = %d\n", Timings->SEQ_MISC_TIMING2.PA2RDATA);
-	printf("Pad0 = %d\n", Timings->SEQ_MISC_TIMING2.Pad0);
-	printf("PA2WDATA = %d\n", Timings->SEQ_MISC_TIMING2.PA2WDATA);
-	printf("Pad1 = %d\n", Timings->SEQ_MISC_TIMING2.Pad1);
-	printf("TFAW = %d\n", Timings->SEQ_MISC_TIMING2.TFAW);
-	printf("TCRCRL = %d\n", Timings->SEQ_MISC_TIMING2.TCRCRL);
-	printf("TCRCWL = %d\n", Timings->SEQ_MISC_TIMING2.TCRCWL);
-	printf("TFAW32 = %d\n\n", Timings->SEQ_MISC_TIMING2.TFAW32);
-	
-	printf("MC_SEQ_MISC1: 0x%08X\n\n", Timings->SEQ_MISC1);
-	printf("MC_SEQ_MISC3: 0x%08X\n\n", Timings->SEQ_MISC3);
-	printf("MC_SEQ_MISC8: 0x%08X\n\n", Timings->SEQ_MISC8);
-	
-	printf("ACTRD = %d\n", Timings->ARB_DRAM_TIMING.ACTRD);
-	printf("ACTWR = %d\n", Timings->ARB_DRAM_TIMING.ACTWR);
-	printf("RASMACTRD = %d\n", Timings->ARB_DRAM_TIMING.RASMACTRD);
-	printf("RASMACTWR = %d\n\n", Timings->ARB_DRAM_TIMING.RASMACTWR);
-	
-	printf("RAS2RAS = %d\n", Timings->ARB_DRAM_TIMING2.RAS2RAS);
-	printf("RP = %d\n", Timings->ARB_DRAM_TIMING2.RP);
-	printf("WRPLUSRP = %d\n", Timings->ARB_DRAM_TIMING2.WRPLUSRP);
-	printf("BUS_TURN = %d\n\n", Timings->ARB_DRAM_TIMING2.BUS_TURN);
-	
-	return(0);
+int main(int argc, char **argv) {
+  uint32_t buf[12];
+  VBIOS_TIMING_FORMAT *Timings = (VBIOS_TIMING_FORMAT *) buf;
+
+  // Short circuited logic should prevent a segfault.
+  if (argc != 2 || strlen(argv[1]) != 96) {
+    printf("Usage: <96-char hex string>\n");
+    return (1);
+  }
+
+  ASCIIHexToBinary(buf, argv[1], 96);
+  printf("SEQ_PMG:\n");
+  printf("CKSRE %d", Timings->SEQ_PMG_TIMING.CKSRE);
+  printf(" CKSRX %d", Timings->SEQ_PMG_TIMING.CKSRX);
+  printf(" CKE_PULSE %d", Timings->SEQ_PMG_TIMING.CKE_PULSE);
+  printf(" CKE %d", Timings->SEQ_PMG_TIMING.CKE);
+  printf(" SEQ_IDLE %d", Timings->SEQ_PMG_TIMING.SEQ_IDLE);
+
+  printf("\nSEQ_RAS:\n");
+  printf("RCDW %d", Timings->SEQ_RAS_TIMING.RCDW);
+  printf(" RCDWA %d", Timings->SEQ_RAS_TIMING.RCDWA);
+  printf(" RCDR %d", Timings->SEQ_RAS_TIMING.RCDR);
+  printf(" RCDRA %d", Timings->SEQ_RAS_TIMING.RCDRA);
+  printf(" RRD %d", Timings->SEQ_RAS_TIMING.RRD);
+  printf(" RC %d", Timings->SEQ_RAS_TIMING.RC);
+
+  printf("\nSEQ_CAS:\n");
+  printf("NOPW %d", Timings->SEQ_CAS_TIMING.NOPW);
+  printf(" NOPR %d", Timings->SEQ_CAS_TIMING.NOPR);
+  printf(" R2W %d", Timings->SEQ_CAS_TIMING.R2W);
+  printf(" CCLD %d", Timings->SEQ_CAS_TIMING.CCLD);
+  printf(" R2W %d", Timings->SEQ_CAS_TIMING.R2R);
+  printf(" W2R %d", Timings->SEQ_CAS_TIMING.W2R);
+  printf(" CL %d", Timings->SEQ_CAS_TIMING.CL);
+
+  printf("\nSEQ_MISC:\n");
+  printf("RP_WRA %d", Timings->SEQ_MISC_TIMING.RP_WRA);
+  printf(" RP_RDA %d", Timings->SEQ_MISC_TIMING.RP_RDA);
+  printf(" TRP %d", Timings->SEQ_MISC_TIMING.TRP);
+  printf(" RFC %d", Timings->SEQ_MISC_TIMING.RFC);
+
+  printf("\nSEQ_MISC2:\n");
+  printf("PA2RDATA %d", Timings->SEQ_MISC_TIMING2.PA2RDATA);
+  printf(" PA2WDATA %d", Timings->SEQ_MISC_TIMING2.PA2WDATA);
+  printf(" FAW %d", Timings->SEQ_MISC_TIMING2.FAW);
+  printf(" CRCRL %d", Timings->SEQ_MISC_TIMING2.CRCRL);
+  printf(" CRCWL %d", Timings->SEQ_MISC_TIMING2.CRCWL);
+  printf(" T32AW %d", Timings->SEQ_MISC_TIMING2.T32AW);
+  printf(" WDATATR %d", Timings->SEQ_MISC_TIMING2.WDATATR);
+
+  printf("\nSEQ_MISC3:\n");
+  printf("RAS %d", Timings->SEQ_MISC3.RAS);
+
+  printf("\nARB_DRAM:\n");
+  printf("ACTRD %d", Timings->ARB_DRAM_TIMING.ACTRD);
+  printf(" ACTWR %d", Timings->ARB_DRAM_TIMING.ACTWR);
+  printf(" RASMACTRD %d", Timings->ARB_DRAM_TIMING.RASMACTRD);
+  printf(" RASMACTWR %d", Timings->ARB_DRAM_TIMING.RASMACTWR);
+
+  printf("ARB_DRAM2:\n");
+  printf("RAS2RAS %d", Timings->ARB_DRAM_TIMING2.RAS2RAS);
+  printf(" RP %d", Timings->ARB_DRAM_TIMING2.RP);
+  printf(" WRPLUSRP %d", Timings->ARB_DRAM_TIMING2.WRPLUSRP);
+  printf(" BUS_TURN", Timings->ARB_DRAM_TIMING2.BUS_TURN);
+
+  return (0);
 }
