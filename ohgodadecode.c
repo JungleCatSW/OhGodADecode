@@ -111,11 +111,11 @@ int main(int argc, char **argv) {
   printf(" RASMACTRD %d", Timings->ARB_DRAM_TIMING.RASMACTRD);
   printf(" RASMACTWR %d", Timings->ARB_DRAM_TIMING.RASMACTWR);
 
-  printf("ARB_DRAM2:\n");
+  printf("\nARB_DRAM2:\n");
   printf("RAS2RAS %d", Timings->ARB_DRAM_TIMING2.RAS2RAS);
   printf(" RP %d", Timings->ARB_DRAM_TIMING2.RP);
   printf(" WRPLUSRP %d", Timings->ARB_DRAM_TIMING2.WRPLUSRP);
-  printf(" BUS_TURN", Timings->ARB_DRAM_TIMING2.BUS_TURN);
+  printf(" BUS_TURN %d", Timings->ARB_DRAM_TIMING2.BUS_TURN);
 
   return (0);
 }
