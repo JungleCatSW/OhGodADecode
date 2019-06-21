@@ -116,6 +116,7 @@ int main(int argc, char **argv) {
   printf(" RP %d", Timings->ARB_DRAM_TIMING2.RP);
   printf(" WRPLUSRP %d", Timings->ARB_DRAM_TIMING2.WRPLUSRP);
   printf(" BUS_TURN %d", Timings->ARB_DRAM_TIMING2.BUS_TURN);
+  printf("\n");
 
   return (0);
 }
