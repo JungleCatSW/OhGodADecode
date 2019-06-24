@@ -5,34 +5,44 @@
 #define u32 uint32_t
 #pragma pack(push, 1)
 
-typedef struct _SEQ_WR_CTL_D1_FORMAT {
-  uint32_t DAT_DLY : 4;
-  uint32_t DQS_DLY : 4;
-  uint32_t DQS_XTR : 1;
-  uint32_t DAT_2Y_DLY : 1;
-  uint32_t ADR_2Y_DLY : 1;
-  uint32_t CMD_2Y_DLY : 1;
-  uint32_t OEN_DLY : 4;
-  uint32_t OEN_EXT : 4;
-  uint32_t OEN_SEL : 2;
-  uint32_t Pad0 : 2;
-  uint32_t ODT_DLY : 4;
-  uint32_t ODT_EXT : 1;
-  uint32_t ADR_DLY : 1;
-  uint32_t CMD_DLY : 1;
-  uint32_t Pad1 : 1;
-} SEQ_WR_CTL_D1_FORMAT;
 
-typedef struct _SEQ_WR_CTL_2_FORMAT {
-  uint32_t DAT_DLY_H_D0 : 1;
-  uint32_t DQS_DLY_H_D0 : 1;
-  uint32_t OEN_DLY_H_D0 : 1;
-  uint32_t DAT_DLY_H_D1 : 1;
-  uint32_t DQS_DLY_H_D1 : 1;
-  uint32_t OEN_DLY_H_D1 : 1;
-  uint32_t WCDR_EN : 1;
-  uint32_t Pad0 : 25;
-} SEQ_WR_CTL_2_FORMAT;
+
+ typedef struct _SEQ_WR_CTL_D0 {
+    u32 DAT_DLY : 4;		// Data output latency
+    u32 DQS_DLY : 4;		// DQS Latency
+    u32 DQS_XTR : 1;		// Write Preamble (ON/OFF)
+    u32 DAT_2Y_DLY : 1;		// Delay data (QDR Mode!) (ON/OFF)
+    u32 ADR_2Y_DLY : 1;		// Delay addr (QDR Mode!) (ON/OFF)
+    u32 CMD_2Y_DLY : 1;		// Delay cmd (QDR Mode!) (ON/OFF)
+    u32 OEN_DLY : 4;		// Write cmd enable Latency
+    u32 OEN_EXT : 4;		// Output enable -> Data Burst (0 - 8 where 1 = 1 cycle, 5 = 5 cycles..)
+    u32 OEN_SEL : 2;
+    u32 /*Reserved*/ : 2;
+    u32 ODT_DLY : 4;		// On-Die-Termination latency
+    u32 ODT_EXT : 1;		// On-Die-Termination enable after burst
+    u32 ADR_DLY : 1;
+    u32 CMD_DLY : 1;
+    u32 /*Reserved*/ : 1;
+} SEQ_WR_CTL_D0_FORMAT;
+
+
+typedef struct _SEQ_WR_CTL_D1{
+    u32 DAT_DLY : 4;		// Data output latency
+    u32 DQS_DLY : 4;		// DQS Latency
+    u32 DQS_XTR : 1;		// Write Preamble (ON/OFF)
+    u32 DAT_2Y_DLY : 1;		// Delay data (QDR Mode!) (ON/OFF)
+    u32 ADR_2Y_DLY : 1;		// Delay addr (QDR Mode!) (ON/OFF)
+    u32 CMD_2Y_DLY : 1;		// Delay cmd (QDR Mode!) (ON/OFF)
+    u32 OEN_DLY : 4;		// Write cmd enable Latency
+    u32 OEN_EXT : 4;		// Output enable -> Data Burst (0 - 8 where 1 = 1 cycle, 5 = 5 cycles..)
+    u32 OEN_SEL : 2;
+    u32 /*Reserved*/ : 2;
+    u32 ODT_DLY : 4;		// On-Die-Termination latency
+    u32 ODT_EXT : 1;		// On-Die-Termination enable after burst
+    u32 ADR_DLY : 1;
+    u32 CMD_DLY : 1;
+    u32 : 1;
+} SEQ_WR_CTL_D1_FORMAT;
 
 typedef struct _SEQ_PMG_TIMING {
   u32 CKSRE : 4;
@@ -106,17 +116,56 @@ typedef struct _ARB_DRAM_TIMING2 {
   u32 BUS_TURN : 8;
 } ARB_DRAM_TIMING2_FORMAT;
 
+
+typedef struct _SEQ_MISC8 {
+    // MR8
+    u32 CLEHF : 1;			// Cas Latency Extra High Frequency (0 = normal range, 1 = Extended)
+    u32 WREHF : 1;			// Write Recovery Extra High Frequency (0 = normal range, 1 = Extended)
+    u32 RFU : 10;
+    u32 BA0 : 1;
+    u32 BA1 : 1;
+    u32 BA2 : 1;
+    u32 BA3 : 1;
+    u32 /*Reserved*/ : 16;
+  } SEQ_MISC8_FORMAT;
+
+typedef struct _SEQ_MISC1 {
+    // MR0
+    u32 WL : 3;				// Write Latency
+    u32 CL : 4;				// CAS Latency
+    u32 TM : 1;
+    u32 WR : 4;				// Write Recovery
+    u32 BA0 : 1;
+    u32 BA1 : 1;
+    u32 BA2 : 1;
+    u32 BA3 : 1;
+    // MR1
+    u32 DS : 2;				// Driver Strength (0 = Auto Calibration)
+    u32 DT : 2;				// Data Termination (0 = Disabled)
+    u32 ADR : 2;				// ADR CMD Termination (0 = CKE value at Reset)
+    u32 CAL : 1;			// Calibration Update
+    u32 PLL : 1;
+    u32 RDBI : 1;			// Read DBI (ON/OFF)
+    u32 WDBI : 1;			// Write DBI (ON/OFF)
+    u32 ABI : 1;			// (ON/OFF)
+    u32 RESET : 1;			// PLL Reset
+    u32 BA_0 : 1;
+    u32 BA_1 : 1;
+    u32 BA_2 : 1;
+    u32 BA_3 : 1;
+} SEQ_MISC1_FORMAT;
+
 typedef struct _VBIOS_TIMING_FORMAT {
-  SEQ_WR_CTL_D1_FORMAT SEQ_WR_CTL_D1;
-  SEQ_WR_CTL_2_FORMAT SEQ_WR_CTL_2;
+  SEQ_WR_CTL_D0_FORMAT SEQ_WR_CTL_D0; // WAS D1 & D2 // in the regs 0 and 1 are close together but 2 is further away
+  SEQ_WR_CTL_D1_FORMAT SEQ_WR_CTL_D1; // GUESSING HERE
   SEQ_PMG_TIMING_FORMAT SEQ_PMG_TIMING;
   SEQ_RAS_TIMING_FORMAT SEQ_RAS_TIMING;
   SEQ_CAS_TIMING_FORMAT SEQ_CAS_TIMING;
   SEQ_MISC_TIMING_FORMAT SEQ_MISC_TIMING;
   SEQ_MISC_TIMING2_FORMAT SEQ_MISC_TIMING2;
-  uint32_t SEQ_MISC1;
+  SEQ_MISC1_FORMAT SEQ_MISC1;
   SEQ_MISC3_FORMAT SEQ_MISC3;
-  uint32_t SEQ_MISC8;
+  SEQ_MISC8_FORMAT SEQ_MISC8;
   ARB_DRAM_TIMING_FORMAT ARB_DRAM_TIMING;
   ARB_DRAM_TIMING2_FORMAT ARB_DRAM_TIMING2;
 } VBIOS_TIMING_FORMAT;
